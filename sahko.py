@@ -24,6 +24,7 @@ def read_csv_file():
 
         return list_return
 
+# Draw graph
 def draw_graph(usage_list):
     x = []
     y = []
@@ -38,6 +39,14 @@ def draw_graph(usage_list):
     plt.ylabel('kWh')
     plt.title('Sähkönkulutus')
     plt.show()
+
+def print_csv_file(usage_list):
+    row = 1
+    print('\tMonth\tkWh')
+    for value in usage_list:
+        for key, val in value.items():
+            print(f'#{row}\t{key}\t{val}')
+        row += 1
 
 def main():
 
@@ -61,7 +70,7 @@ Mitä haluat tehdä? ''', end='')
         valinta = int(input())
 
         if valinta == 1:
-            print(usage_list)
+            print_csv_file(usage_list)
         elif valinta == 3:
             draw_graph(usage_list)
         elif valinta == 4:
