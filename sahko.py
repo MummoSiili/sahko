@@ -40,6 +40,14 @@ def draw_graph(usage_list):
     plt.show()
 
 def main():
+
+    # Test if data.csv exists
+    try:
+        usage_list = read_csv_file()
+    except Exception as e:
+        print("Tiedosto 'data.csv' ei ole olemassa")
+        sys.exit(0)
+
     # Run until 'Lopeta'
     while True:
         print('''
@@ -53,7 +61,6 @@ Mitä haluat tehdä? ''', end='')
         valinta = int(input())
 
         if valinta == 1:
-            usage_list = read_csv_file()
             print(usage_list)
         elif valinta == 3:
             draw_graph(usage_list)
