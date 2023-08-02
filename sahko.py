@@ -42,7 +42,8 @@ def draw_graph(usage_list):
 
 def print_csv_file(usage_list):
     row = 1
-    print('\tMonth\tkWh')
+    print('\n### Sähkönkulutus kuukausitasolla')
+    print('\n\tMonth\tkWh')
     for value in usage_list:
         for key, val in value.items():
             print(f'#{row}\t{key}\t{val}')
@@ -71,6 +72,11 @@ Mitä haluat tehdä? ''', end='')
 
         if valinta == 1:
             print_csv_file(usage_list)
+        elif valinta == 2:
+            pass
+            '''
+            Create feature here where you can add data to data.csv file via program
+            '''
         elif valinta == 3:
             draw_graph(usage_list)
         elif valinta == 4:
