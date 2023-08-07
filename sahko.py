@@ -49,6 +49,13 @@ def print_csv_file(usage_list):
             print(f'#{row}\t{key}\t{val}')
         row += 1
 
+def add_data(usage_list):
+    month = input("Anna kuukausi muodossa 'MM-YYYY' esim. '01-2012': ")
+    kwh = input("Anna sähkönkulutus muodoss 'xxx.xx' esim. '123.57': ")
+    buffer_dict = {month : kwh}
+    usage_list.append(buffer_dict)
+
+
 def main():
 
     # Test if data.csv exists
@@ -73,13 +80,13 @@ Mitä haluat tehdä? ''', end='')
         if valinta == 1:
             print_csv_file(usage_list)
         elif valinta == 2:
-            pass
-            '''
-            Create feature here where you can add data to data.csv file via program
-            '''
+            add_data(usage_list)
         elif valinta == 3:
             draw_graph(usage_list)
         elif valinta == 4:
+            '''
+            Write code that saves currenct usage list back to CSV file
+            '''
             sys.exit(0)
 
 if __name__ == "__main__":
