@@ -12,16 +12,8 @@ def read_csv_file():
 
     with open('data.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=';')
-        row = 0
-
-        for value in csv_reader:
-            dict_return = {}
-            if row == 0:
-                row += 1 # skip first row
-            else:
-                dict_return[value[0]] = value[1]
-                list_return.append(dict_return)
-
+        for row in csv_reader:
+            list_return.append(row)
         return list_return
 
 # Draw graph
@@ -41,13 +33,15 @@ def draw_graph(usage_list):
     plt.show()
 
 def print_csv_file(usage_list):
-    row = 1
+    row = 0
     print('\n### Sähkönkulutus kuukausitasolla')
     print('\n\tMonth\tkWh')
     for value in usage_list:
-        for key, val in value.items():
-            print(f'#{row}\t{key}\t{val}')
-        row += 1
+        if row == 0:
+            row += 1
+        else:
+            print(f'#{row}\t{value[0]}\t{value[1]}')
+            row += 1
 
 def add_data(usage_list):
     month = input("Anna kuukausi muodossa 'MM-YYYY' esim. '01-2012': ")
