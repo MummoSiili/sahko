@@ -20,10 +20,13 @@ def read_csv_file():
 def draw_graph(usage_list):
     x = []
     y = []
+    row = 0
     for i in usage_list:
-        for month, kwh in i.items():
-            x.append(month)
-            y.append(float(kwh))
+        if row == 0:
+            row += 1
+        else:
+            x.append(i[0])
+            y.append(float(i[1]))
 
     plt.plot(x, y, color='green', linestyle='dashed', marker='o', \
     markerfacecolor='blue', markersize=6)
@@ -45,10 +48,18 @@ def print_csv_file(usage_list):
 
 def add_data(usage_list):
     month = input("Anna kuukausi muodossa 'MM-YYYY' esim. '01-2012': ")
-    kwh = input("Anna sähkönkulutus muodoss 'xxx.xx' esim. '123.57': ")
-    buffer_dict = {month : kwh}
-    usage_list.append(buffer_dict)
+    kwh = input("Anna sähkönkulutus muodossa 'xxx.xx' esim. '123.57': ")
+    buffer = [month, kwh]
+    usage_list.append(buffer)
 
+def write_csv_to_file(usage_list):
+    with open('data.csv', 'w') as file:
+        writer_obj = csv.writer(file, delimiter=';')
+
+        for row in usage_list:
+            writer_obj.writerow(row)
+
+    print('data saved!')
 
 def main():
 
@@ -78,9 +89,7 @@ Mitä haluat tehdä? ''', end='')
         elif valinta == 3:
             draw_graph(usage_list)
         elif valinta == 4:
-            '''
-            Write code that saves currenct usage list back to CSV file
-            '''
+            write_csv_to_file(usage_list)
             sys.exit(0)
 
 if __name__ == "__main__":
