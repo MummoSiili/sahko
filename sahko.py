@@ -4,6 +4,7 @@ Sähkön hinta
 
 import sys, csv
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Read 'data.csv' file and return a list
 def read_csv_file():
@@ -33,6 +34,21 @@ def draw_graph(usage_list):
     plt.xlabel('Kuukausi')
     plt.ylabel('kWh')
     plt.title('Sähkönkulutus')
+    plt.show()
+
+def draw_price(usage_list):
+    x = []
+    y = []
+    row = 0
+    for i in usage_list:
+        if row == 0:
+            row += 1
+        else:
+            x.append(i[0])
+            y.append(float(i[2]))
+    month = np.array(x)
+    price = np.array(y)
+    plt.bar(month,price)
     plt.show()
 
 def print_csv_file(usage_list):
@@ -88,6 +104,7 @@ Mitä haluat tehdä? ''', end='')
             add_data(usage_list)
         elif valinta == 3:
             draw_graph(usage_list)
+            draw_price(usage_list)
         elif valinta == 4:
             write_csv_to_file(usage_list)
             sys.exit(0)
