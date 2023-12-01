@@ -55,6 +55,12 @@ def add_to_db(usage_list, db_collection):
 
     db_collection.insert_many(db_list)
 
+def read_db(db_collection):
+    print('\n### Sähkönkulutus kuukausitasolla')
+    print('\n\tMonth\tkWh\t\tCost')
+    for x in db_collection.find().sort(('_id')):
+        print(f'\t{x["month"]}\t{x["consumption"]}\t{x["price"]}')
+
 def main():
 
     # create and use db
@@ -67,6 +73,7 @@ def main():
         print('''
 (1) Tuo CSV data (data.csv)
 (2) Lisää data
+(3) Lue tietokanta
 (4) Lopeta
 
 Mitä haluat tehdä? ''', end='')
@@ -79,7 +86,7 @@ Mitä haluat tehdä? ''', end='')
         elif valinta == 2:
             add_data(usage_list)
         elif valinta == 3:
-            print_csv_file(usage_list)
+            read_db(db_collection)
         elif valinta == 4:
             write_csv_to_file(usage_list)
             sys.exit(0)
