@@ -27,11 +27,34 @@ def print_csv_file(usage_list):
             print(f'#{row}\t{value[0]}\t{value[1]}')
             row += 1
 
-def add_data(usage_list):
-    month = input("Anna kuukausi muodossa 'MM-YYYY' esim. '01-2012': ")
-    kwh = input("Anna sähkönkulutus muodossa 'xxx.xx' esim. '123.57': ")
-    buffer = [month, kwh]
-    usage_list.append(buffer)
+def add_data(db_collection):
+    while True:
+        print('### Nykyinen tietokannan sisältö')
+        read_db(db_collection)
+        print('''
+    (1) Lisää dataa
+    (2) Muokkaa dataa
+    (3) Palaa
+    Mitä haluat tehdä? ''', end='')
+
+        valinta = int(input())
+
+        if valinta == 1:
+            add_entry_to_db(db_collection)
+        elif valinta == 2:
+            modify_db_entry(db_collection)
+        elif valinta == 3:
+            break
+
+def add_entry_to_db(db_collection):
+   db_size = db_collection.count_documents({})
+   id = db_size + 1
+
+   month = input('Anna kuukausi muodossa "KK-VVVV": ')
+   consumption = input('Anna kWh kulutus muodossa "xxx.xx": ')
+   price = input('Anna laskun summa muodoss "xxx.xx": ')
+
+   db_collection.insert_one({'_id': id, 'month': month, 'consumption': consumption, 'price': price})
 
 def write_csv_to_file(usage_list):
     with open('data.csv', 'w') as file:
@@ -41,6 +64,24 @@ def write_csv_to_file(usage_list):
             writer_obj.writerow(row)
 
     print('data saved!')
+
+def modify_db_entry(db_collection):
+    read_db_with_id(db_collection)
+    id = input('Valitse ID mitä haluat muokata: ')
+    query = {"_id": id }
+
+    print('### Valitse uudet arvot:')
+    month = input('Anna kuukausi muodossa "KK-VVVV": ')
+    consumption = input('Anna kWh kulutus muodossa "xxx.xx": ')
+    price = input('Anna laskun summa muodoss "xxx.xx": ')
+
+    new_values = {"$set": {'month': month, 'consumption': consumption, 'price': price}}
+    print(f'ID #{id} päivitetty!')
+
+def read_db_with_id(db_collection):
+    print('#ID\tMonth\tkWh\t\tCost')
+    for x in db_collection.find().sort(('_id')):
+        print(f'{x["_id"]}\t{x["month"]}\t{x["consumption"]}\t{x["price"]}')
 
 def add_to_db(usage_list, db_collection):
     # delete existing db first to insert new one from csv
@@ -71,8 +112,8 @@ def main():
     # Run until 'Lopeta'
     while True:
         print('''
-(1) Tuo CSV data (data.csv)
-(2) Lisää data
+(1) Tuo CSV data (data.csv) - Tämä pyyhkii tietokannan ja importtaa kaiken .csv -tiedostosta
+(2) Lisää dataa
 (3) Lue tietokanta
 (4) Lopeta
 
@@ -84,11 +125,10 @@ Mitä haluat tehdä? ''', end='')
             usage_list = read_csv_file()
             add_to_db(usage_list, db_collection)
         elif valinta == 2:
-            add_data(usage_list)
+            add_data(db_collection)
         elif valinta == 3:
             read_db(db_collection)
         elif valinta == 4:
-            write_csv_to_file(usage_list)
             sys.exit(0)
 
 if __name__ == "__main__":
