@@ -29,12 +29,12 @@ def print_csv_file(usage_list):
 
 def add_data(db_collection):
     while True:
-        print('### Nykyinen tietokannan sisältö')
         read_db(db_collection)
         print('''
     (1) Lisää dataa
     (2) Muokkaa dataa
-    (3) Palaa
+    (3) Poista dataa
+    (4) Palaa
     Mitä haluat tehdä? ''', end='')
 
         valinta = int(input())
@@ -44,7 +44,16 @@ def add_data(db_collection):
         elif valinta == 2:
             modify_db_entry(db_collection)
         elif valinta == 3:
+            delete_db_entry(db_collection)
+        elif valinta == 4:
             break
+
+def delete_db_entry(db_collection):
+    read_db_with_id(db_collection)
+    id = input('Valitse ID mitä haluat poistaa: ')
+    id = int(id)
+    db_collection.delete_one({"_id": id})
+    print(f'ID {id} poistettu!')
 
 def add_entry_to_db(db_collection):
    db_size = db_collection.count_documents({})
@@ -68,14 +77,14 @@ def write_csv_to_file(usage_list):
 def modify_db_entry(db_collection):
     read_db_with_id(db_collection)
     id = input('Valitse ID mitä haluat muokata: ')
-    query = {"_id": id }
+    id = int(id)
 
     print('### Valitse uudet arvot:')
     month = input('Anna kuukausi muodossa "KK-VVVV": ')
     consumption = input('Anna kWh kulutus muodossa "xxx.xx": ')
     price = input('Anna laskun summa muodoss "xxx.xx": ')
 
-    new_values = {"$set": {'month': month, 'consumption': consumption, 'price': price}}
+    db_collection.update_one({"_id": id}, {"$set": {"month": month, "consumption": consumption, "price": price}})
     print(f'ID #{id} päivitetty!')
 
 def read_db_with_id(db_collection):
@@ -113,7 +122,7 @@ def main():
     while True:
         print('''
 (1) Tuo CSV data (data.csv) - Tämä pyyhkii tietokannan ja importtaa kaiken .csv -tiedostosta
-(2) Lisää dataa
+(2) Lisää tai muokkaa dataa
 (3) Lue tietokanta
 (4) Lopeta
 
