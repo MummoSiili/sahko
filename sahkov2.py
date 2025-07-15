@@ -7,3 +7,5 @@ class sahkoData:
     def __str__(self):
         return f'Consumed {self.kwh} with total price {self.kwh_price}'
 
+eka = sahkoData(600.78, 3.75)
+print(eka)
